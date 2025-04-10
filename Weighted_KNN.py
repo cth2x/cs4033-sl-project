@@ -28,23 +28,43 @@ def euclidean_distance(row1, row2):
     sum_squared = sum(d ** 2 for d in diff_vector)
     return math.sqrt(sum_squared)
 
-def knn_predict(training_data, test_instance, k):
+# def knn_predict(training_data, test_instance, k):
+#     distances = []
+#     for row in training_data:
+#         dist = euclidean_distance(test_instance[:-1], row[:-1])
+#         distances.append((row, dist))
+    
+#     distances.sort(key=lambda x: x[1])
+    
+#     nearest_neighbors = distances[:k]
+    
+#     votes = {}
+#     for neighbor, _ in nearest_neighbors:
+#         label = neighbor[-1]
+#         votes[label] = votes.get(label, 0) + 1
+    
+#     predicted_label = max(votes.items(), key=lambda x: x[1])[0]
+#     return predicted_label
+
+def weighted_knn_predict(training_data, test_instance, k):
     distances = []
     for row in training_data:
         dist = euclidean_distance(test_instance[:-1], row[:-1])
         distances.append((row, dist))
     
     distances.sort(key=lambda x: x[1])
-    
     nearest_neighbors = distances[:k]
     
     votes = {}
-    for neighbor, _ in nearest_neighbors:
+    for neighbor, dist in nearest_neighbors:
         label = neighbor[-1]
-        votes[label] = votes.get(label, 0) + 1
+        # Use inverse distance weighting; add a small constant to avoid division by zero
+        weight = 1 / (dist + 1e-5)
+        votes[label] = votes.get(label, 0) + weight
     
     predicted_label = max(votes.items(), key=lambda x: x[1])[0]
     return predicted_label
+
 
 correctPercentagePlotable = []
 timePlotable = []
@@ -56,7 +76,7 @@ for k in range(1,len(rows_array)):
         test_instance = rows_array[i]
         training_data = rows_array[i+1:]
 
-        prediction = knn_predict(training_data, test_instance, k)
+        prediction = weighted_knn_predict(training_data, test_instance, k)
         # print("Predicted label for the test instance:", prediction)
         isCorrect = test_instance[13] > 0 and prediction > 0
         if test_instance[13] > 0 and prediction > 0 or test_instance[13] == 0 and prediction == 0 :
