@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 df = pd.read_csv("heart+disease/processed.cleveland.data", header=None)
+df = pd.read_csv("heart+disease/combined.data", header=None)
+
 
 df.columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
               "thalach", "exang", "oldpeak", "slope", "ca", "thal", "num"]
@@ -58,7 +60,6 @@ def weighted_knn_predict(training_data, test_instance, k):
     votes = {}
     for neighbor, dist in nearest_neighbors:
         label = neighbor[-1]
-        # Use inverse distance weighting; add a small constant to avoid division by zero
         weight = 1 / (dist + 1e-5)
         votes[label] = votes.get(label, 0) + weight
     
