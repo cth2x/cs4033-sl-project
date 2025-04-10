@@ -7,7 +7,6 @@ import numpy as np
 df = pd.read_csv("heart+disease/processed.cleveland.data", header=None)
 df = pd.read_csv("heart+disease/combined.data", header=None)
 
-
 df.columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
               "thalach", "exang", "oldpeak", "slope", "ca", "thal", "num"]
 
@@ -30,23 +29,23 @@ def euclidean_distance(row1, row2):
     sum_squared = sum(d ** 2 for d in diff_vector)
     return math.sqrt(sum_squared)
 
-# def knn_predict(training_data, test_instance, k):
-#     distances = []
-#     for row in training_data:
-#         dist = euclidean_distance(test_instance[:-1], row[:-1])
-#         distances.append((row, dist))
+def knn_predict(training_data, test_instance, k):
+    distances = []
+    for row in training_data:
+        dist = euclidean_distance(test_instance[:-1], row[:-1])
+        distances.append((row, dist))
     
-#     distances.sort(key=lambda x: x[1])
+    distances.sort(key=lambda x: x[1])
     
-#     nearest_neighbors = distances[:k]
+    nearest_neighbors = distances[:k]
     
-#     votes = {}
-#     for neighbor, _ in nearest_neighbors:
-#         label = neighbor[-1]
-#         votes[label] = votes.get(label, 0) + 1
+    votes = {}
+    for neighbor, _ in nearest_neighbors:
+        label = neighbor[-1]
+        votes[label] = votes.get(label, 0) + 1
     
-#     predicted_label = max(votes.items(), key=lambda x: x[1])[0]
-#     return predicted_label
+    predicted_label = max(votes.items(), key=lambda x: x[1])[0]
+    return predicted_label
 
 def weighted_knn_predict(training_data, test_instance, k):
     distances = []
@@ -66,7 +65,6 @@ def weighted_knn_predict(training_data, test_instance, k):
     predicted_label = max(votes.items(), key=lambda x: x[1])[0]
     return predicted_label
 
-
 correctPercentagePlotable = []
 timePlotable = []
 
@@ -78,6 +76,7 @@ for k in range(1,len(rows_array)):
         training_data = rows_array[i+1:]
 
         prediction = weighted_knn_predict(training_data, test_instance, k)
+        # prediction = knn_predict(training_data, test_instance, k)
         # print("Predicted label for the test instance:", prediction)
         isCorrect = test_instance[13] > 0 and prediction > 0
         if test_instance[13] > 0 and prediction > 0 or test_instance[13] == 0 and prediction == 0 :
