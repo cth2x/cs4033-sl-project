@@ -1,6 +1,8 @@
 import pandas as pd
 import math
 import time
+import matplotlib.pyplot as plt
+import numpy as np
 
 df = pd.read_csv("heart+disease/processed.cleveland.data", header=None)
 
@@ -44,26 +46,44 @@ def knn_predict(training_data, test_instance, k):
     predicted_label = max(votes.items(), key=lambda x: x[1])[0]
     return predicted_label
 
+correctPercentagePlotable = []
+timePlotable = []
+
 for k in range(1,len(rows_array)):
     correctPercentage = 0.0
     start_time = time.time()
     for i in range(len(rows_array) - 1):
         test_instance = rows_array[i]
         training_data = rows_array[i+1:]
-        # k = k
 
         prediction = knn_predict(training_data, test_instance, k)
         # print("Predicted label for the test instance:", prediction)
         isCorrect = test_instance[13] > 0 and prediction > 0
-        if test_instance[13] > 0 and prediction > 0:
+        if test_instance[13] > 0 and prediction > 0 or test_instance[13] == 0 and prediction == 0 :
             correctPercentage += 1
         # print(f"is prediction correct? {isCorrect}")
     correctPercentage = correctPercentage / len(rows_array)
     end_time = time.time()
     elapsed_time = end_time - start_time
+    timePlotable.append(elapsed_time)
+    correctPercentagePlotable.append(correctPercentage)
     print("------------------------------------------")
     print(f"    Elapsed time: {elapsed_time} seconds")
     print(f"    k = {k}")
     print(f"    correctPercentage = {correctPercentage}")
 
 print("------------------------------------------")
+
+plt.plot(range(1,len(rows_array)), correctPercentagePlotable)
+
+plt.xlabel("Numbers of Neighbors")
+plt.ylabel("Accuracy (%)")
+plt.title("Accuracy vs Numbers of Neighbors")
+plt.show()
+
+plt.plot(range(1,len(rows_array)), timePlotable)
+
+plt.xlabel("Numbers of Neighbors")
+plt.ylabel("Time (s)")
+plt.title("Time vs Numbers of Neighbors")
+plt.show()
