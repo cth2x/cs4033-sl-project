@@ -1,0 +1,13 @@
+Gaussian Naive Bayes Classification Report
+Dataset: combined.data (after dropping rows with '?')
+Evaluation: 80/20 Train/Test Split (random_state=42, stratify=y)
+Accuracy: 0.7563
+
+                precision    recall  f1-score   support
+
+No Disease (0)       0.83      0.74      0.78        70
+   Disease (1)       0.68      0.78      0.72        49
+
+      accuracy                           0.76       119
+     macro avg       0.75      0.76      0.75       119
+  weighted avg       0.76      0.76      0.76       119
